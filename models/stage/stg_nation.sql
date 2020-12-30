@@ -1,7 +1,7 @@
 with stg_nation as (
     select 
         {{ make_hashpk(['N_NATIONKEY'], pkname='hash_nationkey') }},
-        N_NATIONKEY as NATION,
+        N_NATIONKEY as NATIONKEY,
         N_NAME as NAME,
         N_REGIONKEY as REGIONKEY,
         N_COMMENT as COMMENT,

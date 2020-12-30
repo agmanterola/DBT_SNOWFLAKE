@@ -39,6 +39,11 @@ models:
       stage:
           materialized: table
       vault:
-          materialized: table
+        hub:
+            materialized: table
+        link:
+            materialized: table
+        satellite:
+            materialized: table            
       mart:
           materialized: view                              
