@@ -7,7 +7,7 @@
     )
 }}
 
-with hub_region_tmp as (
+with hub_region as (
     select
 		hash_regionkey,
         {{ make_tracefields(source='stg_region') }},
@@ -19,4 +19,4 @@ with hub_region_tmp as (
 
 )
 
-select * from hub_region_tmp
+select * from hub_region
