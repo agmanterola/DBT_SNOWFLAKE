@@ -13,9 +13,10 @@ with hub_region as (
         {{ make_tracefields(source='stg_region') }},
         REGIONKEY
     from {{ ref('stg_region') }}
-    {% if is_incremental() %}
+    /*{% if is_incremental() %}
         where hash_regionkey not in (select hash_regionkey from {{ this }})
     {% endif %}
+    */
 
 )
 

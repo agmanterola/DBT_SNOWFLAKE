@@ -13,9 +13,10 @@ with hub_nation as (
         {{ make_tracefields(source='stg_nation') }},
         NATIONKEY
     from {{ ref('stg_nation') }}
-    {% if is_incremental() %}
+    /*{% if is_incremental() %}
         where hash_nationkey not in (select hash_nationkey from {{ this }})
     {% endif %}
+    */
 
 )
 

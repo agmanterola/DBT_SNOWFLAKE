@@ -13,9 +13,10 @@ with hub_customer as (
         {{ make_tracefields(source='stg_customer') }},
         CUSTKEY
     from {{ ref('stg_customer') }}
-    {% if is_incremental() %}
+    /*{% if is_incremental() %}
         where hash_customerkey not in (select hash_customerkey from {{ this }})
     {% endif %}
+    */
 
 )
 

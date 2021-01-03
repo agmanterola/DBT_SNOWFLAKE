@@ -13,9 +13,10 @@ with hub_supplier as (
         {{ make_tracefields(source='stg_supplier') }},
         SUPPKEY
     from {{ ref('stg_supplier') }}
-    {% if is_incremental() %}
+    /*{% if is_incremental() %}
         where hash_supplierkey not in (select hash_supplierkey from {{ this }})
     {% endif %}
+    */
 
 )
 

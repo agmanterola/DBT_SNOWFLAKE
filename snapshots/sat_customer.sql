@@ -9,7 +9,7 @@
             unique_key='hash_customerkey',
 
             strategy='check',
-            check_cols=['hashdiff'],
+            check_cols=['hashdiff']
         )
     }}
 

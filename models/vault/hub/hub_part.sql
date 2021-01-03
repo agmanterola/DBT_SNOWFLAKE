@@ -13,9 +13,10 @@ with hub_part as (
         {{ make_tracefields(source='stg_part') }},
         PARTKEY
     from {{ ref('stg_part') }}
-    {% if is_incremental() %}
+    /*{% if is_incremental() %}
         where hash_partkey not in (select hash_partkey from {{ this }})
     {% endif %}
+    */
 
 )
 
