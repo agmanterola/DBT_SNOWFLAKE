@@ -1,10 +1,10 @@
-with  sat_customer as (
-    select * from {{ ref('sat_customer') }} s
+with  sat_supplier as (
+    select * from {{ ref('sat_supplier') }} s
     where dbt_valid_to is null
 ),
 
-hub_customer as (
-    select HASH_CUSTOMERKEY from {{ ref('hub_customer')}} h
+hub_supplier as (
+    select HASH_SUPPLIERKEY from {{ ref('hub_supplier')}} h
     where load_date = TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD'))
 ),
 
@@ -24,25 +24,24 @@ nation as (
         and s.dbt_valid_to is null
 ),
 
-customer as (
+supplier as (
  select * 
- from hub_customer h
- inner join sat_customer s
-    on h.HASH_CUSTOMERKEY = s.HASH_CUSTOMERKEY
+ from hub_supplier h
+ inner join sat_supplier s
+    on h.HASH_SUPPLIERKEY = s.HASH_SUPPLIERKEY
 )
 
 
 select
-    c.CUSTKEY,
-    c.NAME,
-    c.ADDRESS,
+    s.SUPPKEY,
+    s.NAME,
+    s.ADDRESS,
     n.NAME as NATION,
     r.NAME as REGION,
-    c.PHONE,
-    c.ACCTBAL,
-    c.MKTSEGMENT,
-    c.COMMENT
-    from customer c
-    inner join nation n on c.NATIONKEY = n.NATIONKEY
+    s.PHONE,
+    s.ACCTBAL,
+    s.COMMENT
+    from supplier s
+    inner join nation n on s.NATIONKEY = n.NATIONKEY
     inner join region r on n.REGIONKEY = r.REGIONKEY
 
