@@ -15,17 +15,17 @@ sat_orders as (
 
 lnk_lineitem as (
     select HASH_LINEITEMKEY from {{ ref('lnk_lineitem')}} l
-    where load_date = TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD'))
+    where last_seen = TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD'))
 ),
 
 lnk_partsupp as (
     select HASH_PARTSUPPKEY from {{ ref('lnk_partsupp')}} l
-    where load_date = TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD'))
+    where last_seen = TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD'))
 ),
 
 hub_orders as (
     select HASH_ORDERKEY from {{ ref('hub_orders')}} l
-    where load_date = TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD'))
+    where last_seen = TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD'))
 ),
 
 
@@ -54,7 +54,6 @@ orders as (
     on h.HASH_ORDERKEY = s.HASH_ORDERKEY
 )
 
-
 select 
 l.ORDERKEY as ORDERKEY,
 l.PARTKEY as PARTKEY,
@@ -69,7 +68,7 @@ l.RETURNFLAG as RETURNFLAG,
 l.LINESTATUS as LINESTATUS,
 p.AVAILQTY as AVAILQTY,
 p.SUPPLYCOST as SUPPLYCOST,
-TO_NUMBER(TO_CHAR(o.ORDERDATE,'YYYYMMDD')) as ORDERDATE,
+order_refdates.DAYKEY as ORDERDATE,
 o.ORDERPRIORITY as ORDERPRIORITY,
 o.SHIPPRIORITY as SHIPPRIORITY,
 o.TOTALPRICE as ORDTOTALPRICE,
@@ -79,9 +78,11 @@ receipt_refdates.DAYKEY as RECEIPTDATE,
 l.SHIPINSTRUCT,
 l.SHIPMODE
 from lineitem l
+inner join partsupp p on (l.PARTKEY = p.PARTKEY AND l.SUPPKEY = p.SUPPKEY)
+inner join orders o on (l.ORDERKEY = o.ORDERKEY)
 inner join ref_dates ship_refdates on TO_NUMBER(TO_CHAR(l.SHIPDATE,'YYYYMMDD'))= ship_refdates.DAYKEY
 inner join ref_dates commit_refdates on TO_NUMBER(TO_CHAR(l.COMMITDATE,'YYYYMMDD'))= commit_refdates.DAYKEY
 inner join ref_dates receipt_refdates on TO_NUMBER(TO_CHAR(l.RECEIPTDATE,'YYYYMMDD'))= receipt_refdates.DAYKEY
-inner join partsupp p on (l.PARTKEY = p.PARTKEY AND l.SUPPKEY = p.SUPPKEY)
-inner join orders o on (l.ORDERKEY = o.ORDERKEY)
+inner join ref_dates order_refdates on TO_NUMBER(TO_CHAR(o.ORDERDATE,'YYYYMMDD'))= order_refdates.DAYKEY
+
 

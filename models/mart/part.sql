@@ -5,7 +5,7 @@ with  sat_part as (
 
 hub_part as (
     select HASH_PARTKEY from {{ ref('hub_part')}} h
-    where load_date = TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD'))
+    where last_seen = TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD'))
 ),
 
 

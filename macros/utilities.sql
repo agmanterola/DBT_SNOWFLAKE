@@ -24,5 +24,5 @@
 
 {% macro make_tracefields(source='default') -%}
     upper('{{ source }}') as RECORD_SOURCE,
-    TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD')) as LOAD_DATE
+    TO_NUMBER(TO_CHAR(SYSDATE(),'YYYYMMDD')) as LAST_SEEN
 {%- endmacro %}
