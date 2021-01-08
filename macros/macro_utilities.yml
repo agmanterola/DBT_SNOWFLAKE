@@ -1,0 +1,30 @@
+version: 2
+
+macros:
+  - name: make_hashpk
+    description: Función que genera una hash con los campos que forman la PK de una tabla.
+    docs:
+      show: true
+    arguments:
+      - name: fields
+        type: list
+        description: Lista con el/los campo/s que conforman la PK de la tabla y sobre los cuales se quier hacer el hash.
+      - name: pkname
+        type: string
+        description: Nombre que se le quiere dar al campo hash (opcional).
+  - name: make_hashdiff
+    description: Función que genera una hash con los campos no PK sobre los que se quiere identificar un cambio para historificar el registro.
+    docs:
+      show: true
+    arguments:
+      - name: fields
+        type: list
+        description: Lista con el/los campo/s que conforman la PK de la tabla y sobre los cuales se quier hacer el hash.
+  - name: make_tracefields
+    description: Función que incluye los campos de trazabilidad y auditoría del registro. La fuente origen del que provienen los datos y la fecha de carga del registro.
+    docs:
+      show: true
+    arguments:
+      - name: source
+        type: string
+        description: Fuente/tabla de la que provienen los datos.

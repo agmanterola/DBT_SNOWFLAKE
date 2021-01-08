@@ -1,0 +1,179 @@
+version: 2
+
+sources:
+    - name: TPCH_SF1
+      description: Capa original de los datos. Son vistas de las tablas del esquema TPCH_SF1
+      database: SNOWFLAKE_SAMPLE_DATA
+      tables:
+        - name: region
+          description: Datos originales sobre la región
+          columns:
+            - name: R_REGIONKEY
+              description: PK de la región
+              tests:
+                - unique
+                - not_null
+            - name: R_NAME
+              description: Nombre de la región
+              tests:
+                - not_null
+                - unique
+            - name: R_COMMENT
+              descrption: Descripción de la región
+              tests:
+                - not_null
+        - name: nation
+          description: Datos originales sobre los países
+          columns:
+            - name: N_NATIONKEY
+              description: PK de la tabla de países
+              tests:
+                - unique
+                - not_null
+            - name: N_NAME
+              desciption: Nombre del país
+              tests:
+                - unique
+                - not_null
+            - name: N_REGIONKEY
+              desciption: FK a la clave de la tabla región
+              tests:
+                - not_null
+                - relationships:
+                    to: ref('raw_region')
+                    field: R_REGIONKEY
+            - name: N_COMMENT
+              description: Descripción del país.
+              tests:
+                - not_null                   
+        - name: customer
+          description: Datos originales sobre los clientes
+          columns:
+            - name: C_CUSTKEY
+              description: PK de la tabla del clientes
+              tests:
+                - unique
+                - not_null
+            - name: C_NAME
+              description: Nombre del cliente
+              tests:
+                - unique
+                - not_null
+            - name: C_ADDRESS
+              description: Direccion del cliente
+              tests:
+                - not_null
+            - name: C_NATIONKEY
+              description: FK a la PK de la tabla de países
+              tests:
+                - not_null
+                - relationships:
+                    to: ref('raw_nation')
+                    field: N_NATIONKEY
+        - name: supplier 
+          description: Datos originales sobre el proveedor
+          columns:
+            - name: S_SUPPKEY
+              description: PK de la tabla de proveedores
+              tests:
+                - unique
+                - not_null
+            - name: S_NAME
+              description: Nombre del proveedor
+              tests:
+                - unique
+                - not_null
+            - name: S_ADDRESS
+              description: Dirección del proveedor
+              tests:
+                - not_null
+            - name: S_NATIONKEY
+              description: FK a la PK de la tabla de países
+              tests:
+                - not_null
+                - relationships:
+                    to: ref('raw_nation')
+                    field: N_NATIONKEY
+        - name: part
+          descritpion: Datos originales sobre las piezas
+          columns:
+            - name: P_PARTKEY
+              description: PK de la tabla de piezas
+              tests:
+                - unique
+                - not_null              
+            - name: P_NAME
+              descritpion: Nombre de la pieza
+              tests:
+                - not_null   
+            - name: P_RETAILPRICE
+              description: Previo de venta de la pieza
+              tests:
+                - not_null
+        - name: partsupp
+          descritpion: Datos originales sobre la tabla que relaciona piezas y proveedores
+          tests:
+            - unique:
+                column_name: "PS_PARTKEY || '-' || PS_SUPPKEY"
+          columns:
+            - name: PS_PARTKEY
+              description: Parte de la PK de la tabla de relación. Es FK a la clave de la tabla de piezas
+              tests:
+                - not_null              
+                - relationships:
+                    to: ref('raw_part')
+                    field: P_PARTKEY                
+            - name: PS_SUPPKEY
+              description: Parte de la PK de la tabla de relación. Es FK a la clave de la tabla de proveedores
+              tests:
+                - not_null   
+                - relationships:
+                    to: ref('raw_supplier')
+                    field: S_SUPPKEY                
+        - name: orders
+          description: Datos originales sobre los pedidos
+          columns:
+            - name: O_ORDERKEY
+              description: PK de la tabla de proveedores
+              tests:
+                - unique
+                - not_null
+            - name: O_CUSTKEY
+              description: FK a la PK de la tabla de clientes
+              tests:
+                - not_null   
+                - relationships:
+                    to: ref('raw_customer')
+                    field: C_CUSTKEY
+        - name: lineitem
+          description: Datos originales sobre la línea de caja donde se procesa una pieza de un pedido.
+          tests:
+            - unique:
+                column_name: "L_ORDERKEY || '-' || L_PARTKEY || '-' || L_SUPPKEY || '-' || L_LINENUMBER"
+          columns:
+            - name: L_ORDERKEY
+              description: Parte de la PK de linea de caja. Es FK a la clave de la tabla de pedidos
+              tests:
+                - not_null              
+                - relationships:
+                    to: ref('raw_orders')
+                    field: O_ORDERKEY                
+            - name: L_PARTKEY
+              description: Parte de la PK de linea de caja. Es FK a la clave de la tabla de piezas
+              tests:
+                - not_null              
+                - relationships:
+                    to: ref('raw_part')
+                    field: P_PARTKEY
+            - name: L_SUPPKEY
+              description: Parte de la PK de linea de caja. Es FK a la clave de la tabla de proveedores
+              tests:
+                - not_null              
+                - relationships:
+                    to: ref('raw_supplier')
+                    field: S_SUPPKEY  
+            - name: L_LINENUMBER
+              description: Parte de la PK de linea de caja. Es el identificador de la línea de caja
+              tests:
+                - not_null                                                     
+
